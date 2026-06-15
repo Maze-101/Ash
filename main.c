@@ -85,8 +85,6 @@ char* ash_read_line(){
             }
         }
     }
-
-    return buffer;
 }
 
 void ash_loop(){
