@@ -1,0 +1,40 @@
+# ==========================================
+# Linux Compiled Objects & Libraries
+# ==========================================
+*.o
+*.a
+*.so
+
+# ==========================================
+# Standard Linux Executables
+# ==========================================
+a.out
+
+# If you compile your executable to a specific name, 
+# uncomment the line below and change 'my_program' to your binary's name:
+ash
+
+# ==========================================
+# Build & Tooling Directories
+# ==========================================
+# Keeps your repo clean if you use Make, CMake, or Ninja
+[Bb]uild/
+.cmake/
+CMakeCache.txt
+CMakeFiles/
+Makefile.cmake
+cmake_install.cmake
+
+# ==========================================
+# Core Dumps & Log Files
+# ==========================================
+vgcore.*
+*.log
+
+# ==========================================
+# Editor / IDE Backups
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*~
