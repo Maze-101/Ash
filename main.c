@@ -8,6 +8,13 @@
 #define ASH_TOK_BUFSIZE 64
 #define ASH_TOK_DELIM " \t\r\n\a"
 
+
+// Function Declarations for builtin shell commands:
+
+int ash_cd(char **args);
+int ash_help(char **args);
+int ash_exit(char **args);
+
 // List of builtin commands, followed by their corresponding functions.
 
 char *builtin_str[] = {
