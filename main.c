@@ -9,15 +9,18 @@
 #define ASH_TOK_DELIM " \t\r\n\a"
 
 char** ash_split_line(char* line){
-    int bufsize = ASH_TOK_BUFSIZE, position = 0;
-    char** tokens = malloc(sizeof(char*) * bufsize);
-    char* token;
-
+    int    bufsize   = ASH_TOK_BUFSIZE;
+    int    position  = 0;
+    char** tokens    = malloc(sizeof(char*) * bufsize);
+    char*  token;
+    
+    // validate pointer
     if(!tokens){
         fprintf(stderr, "ash: allocation error\n");
         exit(EXIT_FAILURE);
     }
 
+    // start tokenization
     token = strtok(line, ASH_TOK_DELIM);
 
     while(token != NULL){
@@ -26,25 +29,29 @@ char** ash_split_line(char* line){
 
         if(position >= bufsize){
             bufsize += ASH_TOK_BUFSIZE;
-            tokens = realloc(tokens, sizeof(char*) * bufsize);
+            tokens   = realloc(tokens, sizeof(char*) * bufsize);
+
+            // validate reallocation
             if(!tokens){
                 fprintf(stderr, "ash: allocation error\n");
                 exit(EXIT_FAILURE);
             }
         }
 
+        // tokenize from where we left off
         token = strtok(NULL, ASH_TOK_DELIM);
     }
 
+    // null terminator
     tokens[position] = NULL;
     return tokens;
 }
 
-void *ash_read_line(){
-    int bufsize = ASH_RL_BUFSIZE;
-    int position = 0;
-    char* buffer = malloc(sizeof(char) * bufsize);
-    int c;
+char* ash_read_line(){
+    int   bufsize  = ASH_RL_BUFSIZE;
+    int   position = 0;
+    char* buffer   = malloc(sizeof(char) * bufsize);
+    int   c;
 
     // validate allocation
     if(!buffer){
@@ -69,7 +76,7 @@ void *ash_read_line(){
         // if we exceeded the buffer, reallocate
         if(position >= bufsize){
             bufsize += ASH_RL_BUFSIZE;
-            buffer = realloc(buffer, bufsize);
+            buffer   = realloc(buffer, bufsize);
             
             // validate reallocation
             if(!buffer){
@@ -78,12 +85,14 @@ void *ash_read_line(){
             }
         }
     }
+
+    return buffer;
 }
 
 void ash_loop(){
-    char* line;
+    char*  line;
     char** args;
-    int status;
+    int    status;
 
     do {
         // prompt section
