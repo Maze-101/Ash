@@ -5,6 +5,7 @@ void ash_loop() {
     char **args;
     int status;
 
+    printf("Welcome to the worst shell ever created - Awful shell !\n");
     do {
         printf("> ");
         line = ash_read_line();
