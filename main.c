@@ -8,24 +8,6 @@
 #define ASH_TOK_BUFSIZE 64
 #define ASH_TOK_DELIM " \t\r\n\a"
 
-int ash_execute(char **args)
-{
-    int i;
-
-    if (args[0] == NULL) {
-        // an empty command was entered.
-        return 1;
-    }
-
-    for (i = 0; i < ash_num_builtins(); i++) {
-        if (strcmp(args[0], builtin_str[i]) == 0) {
-        return (*builtin_func[i])(args);
-        }
-    }
-
-    return ash_launch(args);
-}
-
 // Function Declarations for builtin shell commands:
 
 int ash_cd(char **args);
@@ -105,6 +87,24 @@ int ash_launch(char** args){
     }
 
     return 1;
+}
+
+int ash_execute(char **args)
+{
+    int i;
+
+    if (args[0] == NULL) {
+        // an empty command was entered.
+        return 1;
+    }
+
+    for (i = 0; i < ash_num_builtins(); i++) {
+        if (strcmp(args[0], builtin_str[i]) == 0) {
+        return (*builtin_func[i])(args);
+        }
+    }
+
+    return ash_launch(args);
 }
 
 char** ash_split_line(char* line){
