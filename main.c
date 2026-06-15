@@ -5,6 +5,40 @@
 #include <unistd.h>
 
 #define ASH_RL_BUFSIZE 1024
+#define ASH_TOK_BUFSIZE 64
+#define ASH_TOK_DELIM " \t\r\n\a"
+
+char** ash_split_line(char* line){
+    int bufsize = ASH_TOK_BUFSIZE, position = 0;
+    char** tokens = malloc(sizeof(char*) * bufsize);
+    char* token;
+
+    if(!tokens){
+        fprintf(stderr, "ash: allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+
+    token = strtok(line, ASH_TOK_DELIM);
+
+    while(token != NULL){
+        tokens[position] = token;
+        position++;
+
+        if(position >= bufsize){
+            bufsize += ASH_TOK_BUFSIZE;
+            tokens = realloc(tokens, sizeof(char*) * bufsize);
+            if(!tokens){
+                fprintf(stderr, "ash: allocation error\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        token = strtok(NULL, ASH_TOK_DELIM);
+    }
+
+    tokens[position] = NULL;
+    return tokens;
+}
 
 void *ash_read_line(){
     int bufsize = ASH_RL_BUFSIZE;
@@ -14,7 +48,7 @@ void *ash_read_line(){
 
     // validate allocation
     if(!buffer){
-        fprintf(stderr, "lsh: allocation error\n");
+        fprintf(stderr, "ash: allocation error\n");
         exit(EXIT_FAILURE);
     }
 
@@ -39,7 +73,7 @@ void *ash_read_line(){
             
             // validate reallocation
             if(!buffer){
-                fprintf(stderr, "lsh: allocation error\n");
+                fprintf(stderr, "ash: allocation error\n");
                 exit(EXIT_FAILURE);
             }
         }
