@@ -8,6 +8,30 @@
 #define ASH_TOK_BUFSIZE 64
 #define ASH_TOK_DELIM " \t\r\n\a"
 
+int ash_launch(char** args){
+    pid_t pid, wpid;
+    int status;
+
+    pid = fork();
+    if(pid == 0) {
+        // child process
+        if(execvp(args[0], args) == -1){
+            perror("ash");
+        }
+        exit(EXIT_FAILURE);
+    } else if(pid < 0) {
+        // error forking
+        perror("ash");
+    } else {
+        // parent process
+        do {
+            wpid = waitpid(pid, &status, WUNTRACED);
+        } while(!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+
+    return 1;
+}
+
 char** ash_split_line(char* line){
     int    bufsize   = ASH_TOK_BUFSIZE;
     int    position  = 0;
