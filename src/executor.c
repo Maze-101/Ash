@@ -32,8 +32,8 @@ int ash_cd(char **args) {
 int ash_help(char **args) {
     (void)args;
     int i;
-    printf("Shikigami's ash\n");
-    printf("Type program names and arguments, and hit enter.\n");
+    printf("Ash - Awful Shell\n");
+    printf("Type program names and arguments, and hit enter!\n");
     printf("The following are built in:\n");
 
     for (i = 0; i < ash_num_builtins(); i++) {
@@ -55,13 +55,16 @@ int ash_launch(char **args) {
 
     pid = fork();
     if (pid == 0) {
+        // child process
         if (execvp(args[0], args) == -1) {
             perror("ash");
         }
         exit(EXIT_FAILURE);
     } else if (pid < 0) {
+        // fork error
         perror("ash");
     } else {
+        // parent process
         do {
             waitpid(pid, &status, WUNTRACED);
         } while (!WIFEXITED(status) && !WIFSIGNALED(status));
