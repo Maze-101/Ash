@@ -34,8 +34,8 @@ char *ash_read_line() {
 }
 
 char **ash_split_line(char *line) {
-    int bufsize = ASH_TOK_BUFSIZE;
-    int position = 0;
+    size_t bufsize = ASH_TOK_BUFSIZE;
+    size_t position = 0;
     char **tokens = malloc(sizeof(char*) * bufsize);
     char *token;
     
