@@ -10,7 +10,7 @@
 
 #define ASH_RL_BUFSIZE 1024
 #define ASH_TOK_BUFSIZE 64
-#define ASH_TOK_DELIM " \t\r\n\a"
+#define ASH_TOK_DELIM " \t\r\n\a\""
 
 // Core Shell Functions
 char *ash_read_line(void);
