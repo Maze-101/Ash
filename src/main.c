@@ -1,4 +1,4 @@
-#include "ash.h"
+#include "../headers/ash.h"
 
 void ash_loop() {
     char *line;

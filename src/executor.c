@@ -1,4 +1,4 @@
-#include "ash.h"
+#include "../headers/ash.h"
 
 // Define the global arrays here (without the 'extern' keyword)
 char *builtin_str[] = {
