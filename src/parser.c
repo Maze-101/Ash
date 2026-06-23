@@ -1,4 +1,4 @@
-#include "../headers/ash.h"
+#include "ash.h"
 
 char *ash_read_line() {
     int bufsize = ASH_RL_BUFSIZE;

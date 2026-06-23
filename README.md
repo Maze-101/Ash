@@ -19,16 +19,3 @@ A very minimal implementation for a Unix shell in C.
 ![image](assets/greeting.png)
 
 ---
-
-![image](assets/help.png)
-
----
-
-![image](assets/tree.png)
-
----
-
-![image](assets/fastfetch.png)
-
----
-## If you ever wish to contribute, don't hesitate!
