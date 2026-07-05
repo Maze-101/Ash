@@ -1,0 +1,123 @@
+#include "../headers/executer.h"
+
+const char* builtins[] = {
+	"exit",
+	"echo",
+	"type",
+};
+
+bool is_builtin(const char* command){
+	for(int i=0; i < 3; i++){
+		if(strcmp(command, builtins[i]) == 0){
+			return true;
+		}
+	}
+	return false;
+}
+
+void exec_echo(char **tokens){
+    for(int i = 1; tokens[i] != NULL; i++){
+        if(i > 1){
+            printf(" ");
+        }
+        printf("%s", tokens[i]);
+    }
+    printf("\n");
+}
+
+void exec_exit(){
+    exit(0);
+}
+
+char *is_executable(char *command){
+    char *env_path = getenv("PATH");
+    if(!env_path){
+        printf("%s: not found\n", command);
+        return NULL;
+    }
+
+    char *path = malloc(strlen(env_path) + 1);
+    if(!path){
+        fprintf(stderr, "ash: allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+    strcpy(path, env_path);
+    for (char *dir = strtok(path, ":"); dir != NULL; dir = strtok(NULL, ":")) {
+        size_t fpath_size = strlen(dir) + strlen(command) + 2;
+        char *fpath = malloc(fpath_size);
+        if(!fpath){
+            free(path);
+            fprintf(stderr, "ash: allocation error\n");
+            exit(EXIT_FAILURE);
+        }
+
+        snprintf(fpath, fpath_size, "%s/%s", dir, command);
+        if (access(fpath, X_OK) == 0) {
+            free(path);
+            return fpath;
+        }
+        free(fpath);
+    }
+    free(path);
+    return NULL;
+}
+
+void exec_type(char **tokens){
+    char *command = tokens[1];
+
+    if(!command){
+        printf("type: missing argument\n");
+        return;
+    }
+
+    if(is_builtin(command)){
+        printf("%s is a shell builtin\n", command);
+    } else {
+        char *fpath;
+        if(fpath = is_executable(command)){
+            printf("%s is %s\n", command, fpath);
+        } else {
+            printf("%s: not found\n", command);
+        }
+    }
+}
+
+void execute(char **tokens){
+    if(!tokens || !tokens[0]){
+        return;
+    }
+
+    char *command = tokens[0];
+
+    if(is_builtin(command)){
+        if(strcmp(command, "echo") == 0){
+            exec_echo(tokens);
+        } else if(strcmp(command, "exit") == 0){
+            exec_exit();
+        } else if(strcmp(command, "type") == 0){
+            exec_type(tokens);
+        }
+    } else if(is_executable(command)){
+        pid_t pid;
+        int status;
+
+        pid = fork();
+        if (pid == 0) {
+            // child process
+            if (execvp(tokens[0], tokens) == -1) {
+                perror("ash");
+            }
+            exit(EXIT_FAILURE);
+        } else if (pid < 0) {
+            // fork error
+            perror("ash");
+        } else {
+            // parent process
+            do {
+                waitpid(pid, &status, WUNTRACED);
+            } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+        }    
+    } else {
+        printf("%s: command not found\n", command);
+    }
+}
