@@ -1,5 +1,9 @@
 #include "read.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 char* read_line(void){
     size_t buffer_size = LINE_BUFFER_SIZE;
     char *input = malloc(sizeof(char) * buffer_size);

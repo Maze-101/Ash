@@ -1,6 +1,9 @@
-#include "../headers/read.h"
-#include "../headers/parser.h"
-#include "../headers/executer.h"
+#include "executor.h"
+#include "parser.h"
+#include "read.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 
 int main(void) {
     // Flush after every printf

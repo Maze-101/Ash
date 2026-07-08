@@ -1,5 +1,8 @@
 #include "parser.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 char** parse_line(char *input){
     if(!input){
         return NULL;
