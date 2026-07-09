@@ -6,15 +6,21 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-const char* builtins[] = {
-	"exit",
-	"echo",
-	"type",
+// const char* builtins[] = {
+// 	"exit",
+// 	"echo",
+// 	"type",
+// };
+
+builtins_t builtins[BUILTINS_COUNT] = {
+    {"echo", exec_echo},
+    {"exit", exec_exit},
+    {"type", exec_type}
 };
 
 bool is_builtin(const char* command){
 	for(int i=0; i < 3; i++){
-		if(strcmp(command, builtins[i]) == 0){
+		if(strcmp(command, builtins[i].command) == 0){
 			return true;
 		}
 	}
@@ -31,7 +37,7 @@ void exec_echo(char **tokens){
     printf("\n");
 }
 
-void exec_exit(){
+void exec_exit(char **tokens){
     exit(0);
 }
 
@@ -79,8 +85,8 @@ void exec_type(char **tokens){
     if(is_builtin(command)){
         printf("%s is a shell builtin\n", command);
     } else {
-        char *fpath;
-        if(fpath = is_executable(command)){
+        char *fpath = is_executable(command);
+        if(fpath){
             printf("%s is %s\n", command, fpath);
         } else {
             printf("%s: not found\n", command);
@@ -96,12 +102,10 @@ void execute(char **tokens){
     char *command = tokens[0];
 
     if(is_builtin(command)){
-        if(strcmp(command, "echo") == 0){
-            exec_echo(tokens);
-        } else if(strcmp(command, "exit") == 0){
-            exec_exit();
-        } else if(strcmp(command, "type") == 0){
-            exec_type(tokens);
+        for(int i = 0; i < BUILTINS_COUNT; i++){
+            if(strcmp(command, builtins[i].command) == 0){
+                builtins[i].handler(tokens);
+            }
         }
     } else if(is_executable(command)){
         pid_t pid;

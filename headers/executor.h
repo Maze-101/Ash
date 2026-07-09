@@ -1,13 +1,20 @@
 #ifndef EXECUTER_H
 #define EXECUTER_H
 
+#define BUILTINS_COUNT 3
+
 #include <stdbool.h>
 
-bool is_builtin(const char *command);
+typedef struct BUILTINS {
+    char *command;
+    void (*handler)(char **);
+} builtins_t;
+
+bool is_builtin(const char *);
 void execute(char **);
 void exec_echo(char **);
-void exec_exit(void);
+void exec_exit(char **);
 void exec_type(char **);
-char *is_executable(char *command);
+char *is_executable(char *);
 
 #endif

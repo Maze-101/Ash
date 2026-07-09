@@ -10,16 +10,14 @@ int main(void) {
     setbuf(stdout, NULL);
     
     while(1){
-        char *input;
-        char **tokens;
         printf("$ ");
         
-        input = read_line();
+        char *input = read_line();
         if(!input){
             break;
         }
 
-        tokens = parse_line(input);
+        char **tokens = parse_line(input);
         if(!tokens){
             free(input);
             exit(EXIT_FAILURE);
