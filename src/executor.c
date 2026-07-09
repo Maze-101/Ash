@@ -6,12 +6,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-// const char* builtins[] = {
-// 	"exit",
-// 	"echo",
-// 	"type",
-// };
-
 builtins_t builtins[BUILTINS_COUNT] = {
     {"echo", exec_echo},
     {"exit", exec_exit},
