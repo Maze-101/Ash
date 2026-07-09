@@ -88,6 +88,28 @@ void exec_type(char **tokens){
     }
 }
 
+void execute_external(char **tokens){
+    pid_t pid;
+    int status;
+
+    pid = fork();
+    if (pid == 0) {
+        // child process
+        if (execvp(tokens[0], tokens) == -1) {
+            perror("ash");
+        }
+        exit(EXIT_FAILURE);
+    } else if (pid < 0) {
+        // fork error
+        perror("ash");
+    } else {
+        // parent process
+        do {
+            waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+}
+
 void execute(char **tokens){
     if(!tokens || !tokens[0]){
         return;
@@ -99,28 +121,11 @@ void execute(char **tokens){
         for(int i = 0; i < BUILTINS_COUNT; i++){
             if(strcmp(command, builtins[i].command) == 0){
                 builtins[i].handler(tokens);
+                return;
             }
         }
     } else if(is_executable(command)){
-        pid_t pid;
-        int status;
-
-        pid = fork();
-        if (pid == 0) {
-            // child process
-            if (execvp(tokens[0], tokens) == -1) {
-                perror("ash");
-            }
-            exit(EXIT_FAILURE);
-        } else if (pid < 0) {
-            // fork error
-            perror("ash");
-        } else {
-            // parent process
-            do {
-                waitpid(pid, &status, WUNTRACED);
-            } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-        }    
+        execute_external(tokens);
     } else {
         printf("%s: command not found\n", command);
     }
