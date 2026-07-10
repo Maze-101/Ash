@@ -11,6 +11,7 @@ typedef struct BUILTINS {
 } builtins_t;
 
 bool is_builtin(const char *);
+char *expand_tilde(const char *);
 void execute(char **);
 void exec_echo(char **);
 void exec_exit(char **);

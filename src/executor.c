@@ -100,16 +100,41 @@ void exec_pwd(char **tokens){
     }
 }
 
-void exec_cd(char **tokens){
-    if (tokens[1] == NULL) {
-        fprintf(stderr, "ash: cd: missing argument\n");
-        return;
+char *expand_tilde(const char *path) {
+    if (path == NULL) return NULL;
+
+    char *home = getenv("HOME");
+    if (home == NULL) {
+        fprintf(stderr, "ash: cd: HOME not set\n");
+        return NULL;
     }
+
+    char *expanded = malloc(strlen(home) + strlen(path) - 1 + 1);
+    if (expanded == NULL) {
+        perror("malloc failed");
+        return NULL;
+    }
+
+    strcpy(expanded, home);
+    strcat(expanded, path + 1); // path + 1 skips the '~'
+
+    return expanded;
+}
+
+void exec_cd(char **tokens){
     char *path = tokens[1];
-    int status = chdir(path);
+    int status;
+    if (path == NULL) {
+        status = chdir(getenv("HOME"));
+    } else if(path[0] == '~'){
+        char *expanded = expand_tilde(path);
+        status = chdir(expanded);
+    } else {
+        status = chdir(path);
+    }
     if(status){
         fprintf(stderr, "ash: cd: %s: No such file or directory\n", path);
-    }
+    }    
 }
 
 void execute_external(char **tokens){
