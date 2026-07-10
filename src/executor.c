@@ -9,11 +9,12 @@
 builtins_t builtins[BUILTINS_COUNT] = {
     {"echo", exec_echo},
     {"exit", exec_exit},
-    {"type", exec_type}
+    {"type", exec_type},
+    {"pwd", exec_pwd}
 };
 
 bool is_builtin(const char* command){
-	for(int i=0; i < 3; i++){
+	for(int i=0; i < BUILTINS_COUNT; i++){
 		if(strcmp(command, builtins[i].command) == 0){
 			return true;
 		}
@@ -85,6 +86,16 @@ void exec_type(char **tokens){
         } else {
             printf("%s: not found\n", command);
         }
+    }
+}
+
+void exec_pwd(char **tokens){
+    char *cwd = getcwd(NULL, 0);
+    if(cwd){
+        printf("%s\n", cwd);
+        free(cwd);
+    } else {
+        perror("pwd error");
     }
 }
 
