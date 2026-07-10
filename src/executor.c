@@ -111,7 +111,7 @@ char *expand_tilde(const char *path) {
 
     char *expanded = malloc(strlen(home) + strlen(path) - 1 + 1);
     if (expanded == NULL) {
-        perror("malloc failed");
+        fprintf(stderr, "ash: allocation error\n");
         return NULL;
     }
 
@@ -134,7 +134,7 @@ void exec_cd(char **tokens){
     }
     if(status){
         fprintf(stderr, "ash: cd: %s: No such file or directory\n", path);
-    }    
+    }
 }
 
 void execute_external(char **tokens){
