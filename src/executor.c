@@ -10,7 +10,8 @@ builtins_t builtins[BUILTINS_COUNT] = {
     {"echo", exec_echo},
     {"exit", exec_exit},
     {"type", exec_type},
-    {"pwd", exec_pwd}
+    {"pwd" , exec_pwd},
+    {"cd"  , exec_cd}
 };
 
 bool is_builtin(const char* command){
@@ -50,7 +51,7 @@ char *is_executable(char *command){
     }
     strcpy(path, env_path);
     for (char *dir = strtok(path, ":"); dir != NULL; dir = strtok(NULL, ":")) {
-        size_t fpath_size = strlen(dir) + strlen(command) + 2;
+        size_t fpath_size = strlen(dir) + strlen(command) + 10;
         char *fpath = malloc(fpath_size);
         if(!fpath){
             free(path);
@@ -96,6 +97,18 @@ void exec_pwd(char **tokens){
         free(cwd);
     } else {
         perror("pwd error");
+    }
+}
+
+void exec_cd(char **tokens){
+    if (tokens[1] == NULL) {
+        fprintf(stderr, "ash: cd: missing argument\n");
+        return;
+    }
+    char *path = tokens[1];
+    int status = chdir(path);
+    if(status){
+        fprintf(stderr, "ash: cd: %s: No such file or directory\n", path);
     }
 }
 
