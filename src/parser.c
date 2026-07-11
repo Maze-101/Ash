@@ -31,6 +31,8 @@ char** parse_line(char *input) {
                 state = STATE_IN_SINGLE_QUOTE;
             } else if (c == '"') {
                 state = STATE_IN_DOUBLE_QUOTE;
+            } else if(c == '\\'){
+                state = STATE_IN_BACKSLASH;
             } else if (c == ' ' || c == '\t' || c == '\n') {
                 // If we hit a space and have built an argument, save it
                 if (arg_idx > 0) {
@@ -41,29 +43,24 @@ char** parse_line(char *input) {
             } else {
                 current_arg[arg_idx++] = c;
             }
-        } 
-        else if (state == STATE_IN_SINGLE_QUOTE) {
+        } else if (state == STATE_IN_SINGLE_QUOTE) {
             if (c == '\'') {
                 state = STATE_NORMAL; // Closing single quote
             } else {
                 current_arg[arg_idx++] = c; // Take literally
             }
-        } 
-        else if (state == STATE_IN_DOUBLE_QUOTE) {
+        } else if (state == STATE_IN_DOUBLE_QUOTE) {
             if (c == '"') {
                 state = STATE_NORMAL; // Closing double quote
             } else if (c == '\\') {
-                // Handle backslash escaping inside double quotes
-                char next_c = input[i + 1];
-                if (next_c == '"' || next_c == '\\' || next_c == '$') {
-                    current_arg[arg_idx++] = next_c;
-                    i++; // Skip next character since we processed it
-                } else {
-                    current_arg[arg_idx++] = c; // Keep literal backslash
-                }
+                state = STATE_IN_BACKSLASH;
             } else {
                 current_arg[arg_idx++] = c;
             }
+        } else if(state == STATE_IN_BACKSLASH){
+            // Handle backslash escaping inside double quotes
+            current_arg[arg_idx++] = c;
+            state = STATE_NORMAL;
         }
         i++;
     }
