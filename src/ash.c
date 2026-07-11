@@ -25,6 +25,10 @@ int main(void) {
         
         execute(tokens);
 
+        for (int i = 0; tokens[i] != NULL; i++) {
+            free(tokens[i]);
+        }
+        
         free(tokens);
         free(input);
     }
